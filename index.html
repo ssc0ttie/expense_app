@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base target="_top">
+    <!-- Metro UI -->
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/current/metro.css">
+    <style>
+      .container-small{
+         max-width: 800px;
+         margin:0 auto;
+
+      }
+
+    </style>
+  
+  
+  </head>
+  <body>
+
+
+  <div class="container-small">
+    <!-- content here -->
+    <h1>Expense Entry Form</h1>
+    
+    <div class="grid">
+        <form id="expense-form" data-role="validator" action="javascript:">
+            <div class="row">
+                <div class="cell-6 p-1">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input name="date" type="date" placeholder="2/22/2024"/>
+                    </div>
+                </div>
+                <div class="cell-6 p-1">
+                    <div class="form-group">
+                        <label>Item Description</label>
+                        <input name="itemDescription" type="text" placeholder="Grocery"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell-6 p-1">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input name="amount" type="number" placeholder="$0"/>
+                    </div>
+                </div>
+                <div class="cell-6 p-1">
+                    <div class="form-group">
+                        <label>Amount Receivable</label>
+                        <input name="amountReceivable" type="number" placeholder="$0"/>
+                    </div>
+                </div>
+            </div>
+                <div class="cell-6 p-1">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select data-role="select" name="category2">
+                            <option disabled selected></option>
+                            <? for(const category of categories) { ?>
+                                <option><?= category ?></option>
+                            <? } ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="cell-6 p-1">
+                  <div class = "row.d-none" id ="submit-button">
+                    <div class="form-group">
+                        <button class="button success">Submit</button>
+                        <input type="button" class="button" value="Cancel">
+                      </div>
+                  </div>
+              </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+             <div class="row">
+                <div class="cell-6 p-1">
+                  <div class = "row.d-none" id ="success-message">
+                    <div class = "cell-6 p-1">
+                        Thanks for sumitting! <button class = "button secondary" id = "back-to-form">Back to Form</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="cell-12 p-1">
+                  <div class = "row.d-none" id ="progress">
+                    <div class = "cell-12">
+                            <div data-role="progress" data-type="line"></div>
+                            <div data-role="progress" data-type="line" data-small="true"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              
+
+
+
+
+
+</div>
+
+    <!-- Metro UI -->
+    <script src="https://cdn.metroui.org.ua/current/metro.js"></script>
+
+<!-- Java Starts Here -->
+    <script>
+      const expenseForm = document.getElementById("expense-form")
+      const successMessage = document.getElementById("success-message")
+      const backToForm = document.getElementById("back-to-form")
+      const progress = document.getElementById("progress")
+      const submitButton = document.getElementById("submit-button")
+      
+
+
+        // Initially hide the success message and back to form button
+        successMessage.classList.add("d-none");
+        backToForm.classList.add("d-none");
+        progress.classList.add("d-none");
+
+         expenseForm.addEventListener("submit", submitData);
+
+
+      function submitData (e) {
+        e.preventDefault()        
+        console.log("Form Submitted")
+        console.log (this)
+
+        // Hide the submit button
+        submitButton.classList.add("d-none");
+        progress.classList.remove("d-none")
+        expenseForm.classList.add("d-none")
+
+        google.script.run.withSuccessHandler(() => {
+          expenseForm.reset()
+          const selectElements = expenseForm.querySelectorAll("select")
+          const s1 = Metro.getPlugin(selectElements[0], "select")
+          s1.val("")
+
+        // Show the success message and back to form button after successful submission
+        successMessage.classList.remove("d-none")
+        backToForm.classList.remove("d-none");
+        progress.classList.add("d-none")
+
+        }).withFailureHandler(() => {
+
+
+        }).acceptData(this)
+      }
+
+      backToForm.addEventListener("click",()=>{
+
+        expenseForm.classList.remove("d-none")
+        successMessage.classList.add("d-none")
+        progress.classList.add("d-none")
+      // Show the submit button again when back to the form
+        submitButton.classList.remove("d-none");
+
+      })
+
+    </script>
+  </body>
+</html>
